@@ -99,6 +99,27 @@ const MemoEditor = observer((props: Props) => {
   }, [autoFocus]);
 
   useEffect(() => {
+    // Check if there's shared content from Web Share API
+    const sharedContent = localStorage.getItem("share-target-content");
+    if (sharedContent && editorRef.current) {
+      // Insert content into editor
+      editorRef.current.setContent(sharedContent);
+
+      // If it's a URL, try to get metadata
+      if (isValidUrl(sharedContent) && !sharedContent.includes("[") && !sharedContent.includes("]")) {
+        linkMetadataLoading.setLoading();
+        insertLinkWithMetadata(editorRef.current, sharedContent)
+          .finally(() => {
+            linkMetadataLoading.setFinish();
+          });
+      }
+
+      // Remove data from localStorage
+      localStorage.removeItem("share-target-content");
+    }
+  }, []);
+
+  useEffect(() => {
     let visibility = userSetting.memoVisibility;
     if (workspaceMemoRelatedSetting.disallowPublicVisibility && visibility === "PUBLIC") {
       visibility = "PRIVATE";
