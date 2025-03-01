@@ -70,35 +70,6 @@ const App = observer(() => {
     }
   }, []);
 
-  useEffect(() => {
-    // Set up service worker message listeners for Web Share API
-    if ('serviceWorker' in navigator) {
-      const messageHandler = (event: MessageEvent) => {
-        if (event.data && event.data.action === 'STORE_SHARE_DATA') {
-          console.log('store_share_data ====== ', event.data.key, event.data.value)
-          localStorage.setItem(event.data.key, event.data.value);
-        } else if (event.data && event.data.action === 'ADD_SHARED_FILE') {
-          // Store file information in localStorage
-          const sharedFiles = JSON.parse(localStorage.getItem('share-target-files') || '[]');
-          sharedFiles.push({
-            cacheKey: event.data.cacheKey,
-            type: event.data.type,
-            originalFilename: event.data.originalFilename
-          });
-          console.log('sharedFiles ====== ', sharedFiles);
-          localStorage.setItem('share-target-files', JSON.stringify(sharedFiles));
-          localStorage.setItem('share-target-has-files', 'true');
-        }
-      };
-
-      navigator.serviceWorker.addEventListener('message', messageHandler);
-
-      return () => {
-        navigator.serviceWorker.removeEventListener('message', messageHandler);
-      };
-    }
-  }, []);
-
   // Dynamic update metadata with customized profile.
   useEffect(() => {
     if (!workspaceGeneralSetting.customProfile) {

@@ -98,32 +98,96 @@ const MemoEditor = observer((props: Props) => {
     }
   }, [autoFocus]);
 
-  useEffect(() => {
-    // Check if there's shared content from Web Share API
-    const sharedContent = localStorage.getItem("share-target-content");
+  // Function to open IndexedDB
+  const openShareDB = () => {
+    return new Promise<IDBDatabase>((resolve, reject) => {
+      const request = indexedDB.open('memos-share-db', 1);
+
+      request.onerror = () => reject('Error opening IndexedDB');
+
+      request.onsuccess = (event) => {
+        resolve((event.target as IDBOpenDBRequest).result);
+      };
+
+      request.onupgradeneeded = (event) => {
+        const db = (event.target as IDBOpenDBRequest).result;
+        if (!db.objectStoreNames.contains('shared-data')) {
+          db.createObjectStore('shared-data', { keyPath: 'id' });
+        }
+      };
+    });
+  };
+
+  // Function to get data from IndexedDB
+  const getFromIndexedDB = async (key: string) => {
+    try {
+      const db = await openShareDB();
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['shared-data'], 'readonly');
+        const store = transaction.objectStore('shared-data');
+        const request = store.get(key);
+
+        request.onsuccess = () => {
+          if (request.result) {
+            resolve(request.result.data);
+          } else {
+            resolve(null);
+          }
+        };
+
+        request.onerror = () => reject('Error getting data from IndexedDB');
+
+        transaction.oncomplete = () => db.close();
+      });
+    } catch (error) {
+      console.error('Failed to get data from IndexedDB:', error);
+      return null;
+    }
+  };
+
+  // Function to clear data from IndexedDB
+  const clearFromIndexedDB = async (key: string) => {
+    try {
+      const db = await openShareDB();
+      const transaction = db.transaction(['shared-data'], 'readwrite');
+      const store = transaction.objectStore('shared-data');
+      store.delete(key);
+      transaction.oncomplete = () => db.close();
+    } catch (error) {
+      console.error('Failed to clear data from IndexedDB:', error);
+    }
+  };
+
+  // Check if there's shared content from Web Share API
+  const checkForSharedContent = async () => {
+    const sharedContent = await getFromIndexedDB('share-target-content');
     if (sharedContent && editorRef.current) {
       // Insert content into editor
-      editorRef.current.setContent(sharedContent);
+      editorRef.current.setContent(sharedContent as string);
 
       // If it's a URL, try to get metadata
-      if (isValidUrl(sharedContent) && !sharedContent.includes("[") && !sharedContent.includes("]")) {
+      if (isValidUrl(sharedContent as string) && !(sharedContent as string).includes("[") && !(sharedContent as string).includes("]")) {
         linkMetadataLoading.setLoading();
-        insertLinkWithMetadata(editorRef.current, sharedContent)
+        insertLinkWithMetadata(editorRef.current, sharedContent as string)
           .finally(() => {
             linkMetadataLoading.setFinish();
           });
       }
 
-      // Remove data from localStorage
-      localStorage.removeItem("share-target-content");
+      // Remove data from IndexedDB
+      await clearFromIndexedDB('share-target-content');
     }
 
     // Check if there are shared files from Web Share API
-    const hasSharedFiles = localStorage.getItem("share-target-has-files");
-    if (hasSharedFiles === "true" && 'caches' in window) {
-      const sharedFiles = JSON.parse(localStorage.getItem("share-target-files") || "[]");
+    const hasSharedFiles = await getFromIndexedDB('share-target-has-files');
+    if (hasSharedFiles && 'caches' in window) {
+      const sharedFiles = await getFromIndexedDB('share-target-files') as Array<{
+        cacheKey: string;
+        originalFilename: string;
+        type: string;
+      }> | null;
 
-      if (sharedFiles.length > 0) {
+      if (sharedFiles && sharedFiles.length > 0) {
         const processSharedFiles = async () => {
           const cache = await caches.open('memos-share-cache-v1');
           const uploadedResourceList: Resource[] = [];
@@ -162,9 +226,9 @@ const MemoEditor = observer((props: Props) => {
             }));
           }
 
-          // Clear the cache and localStorage after processing
-          localStorage.removeItem("share-target-has-files");
-          localStorage.removeItem("share-target-files");
+          // Clear the cache and IndexedDB after processing
+          await clearFromIndexedDB('share-target-has-files');
+          await clearFromIndexedDB('share-target-files');
           if (navigator.serviceWorker.controller) {
             navigator.serviceWorker.controller.postMessage({
               action: 'CLEAR_SHARE_CACHE'
@@ -175,6 +239,10 @@ const MemoEditor = observer((props: Props) => {
         processSharedFiles().catch(console.error);
       }
     }
+  };
+
+  useEffect(() => {
+    checkForSharedContent();
   }, []);
 
   useEffect(() => {
