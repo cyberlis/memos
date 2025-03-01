@@ -11,6 +11,7 @@ async function sendEvent() {
 
   for (const client of allClients) {
     client.postMessage({action: 'NEW_SHARE'});
+    console.log('post NEW_SHARE');
   }
 }
 

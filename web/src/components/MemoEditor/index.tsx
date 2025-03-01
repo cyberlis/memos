@@ -158,6 +158,22 @@ const MemoEditor = observer((props: Props) => {
     }
   };
 
+  // Listen for service worker messages
+  useEffect(() => {
+    const handleServiceWorkerMessage = (event: MessageEvent) => {
+      console.log('event from service worker ====== ', event.data);
+      if (event.data && event.data.action === 'NEW_SHARE') {
+        checkForSharedContent();
+      }
+    };
+
+    navigator.serviceWorker.addEventListener('message', handleServiceWorkerMessage);
+
+    return () => {
+      navigator.serviceWorker.removeEventListener('message', handleServiceWorkerMessage);
+    };
+  }, []);
+
   // Check if there's shared content from Web Share API
   const checkForSharedContent = async () => {
     const sharedContent = await getFromIndexedDB('share-target-content');
