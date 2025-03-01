@@ -1,6 +1,6 @@
 import { useColorScheme } from "@mui/joy";
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Outlet } from "react-router-dom";
 import { getSystemColorScheme } from "./helpers/utils";
@@ -56,6 +56,48 @@ const App = observer(() => {
       document.head.appendChild(scriptEl);
     }
   }, [workspaceGeneralSetting.additionalScript]);
+
+  // Register service worker for web share target
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then(registration => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(error => {
+          console.error('Service Worker registration failed:', error);
+        });
+    }
+  }, []);
+
+  useEffect(() => {
+    // Set up service worker message listeners for Web Share API
+    if ('serviceWorker' in navigator) {
+      const messageHandler = (event: MessageEvent) => {
+        if (event.data && event.data.action === 'STORE_SHARE_DATA') {
+          console.log('store_share_data ====== ', event.data.key, event.data.value)
+          localStorage.setItem(event.data.key, event.data.value);
+        } else if (event.data && event.data.action === 'ADD_SHARED_FILE') {
+          // Store file information in localStorage
+          const sharedFiles = JSON.parse(localStorage.getItem('share-target-files') || '[]');
+          sharedFiles.push({
+            cacheKey: event.data.cacheKey,
+            type: event.data.type,
+            originalFilename: event.data.originalFilename
+          });
+          console.log('sharedFiles ====== ', sharedFiles);
+          localStorage.setItem('share-target-files', JSON.stringify(sharedFiles));
+          localStorage.setItem('share-target-has-files', 'true');
+        }
+      };
+
+      navigator.serviceWorker.addEventListener('message', messageHandler);
+
+      return () => {
+        navigator.serviceWorker.removeEventListener('message', messageHandler);
+      };
+    }
+  }, []);
 
   // Dynamic update metadata with customized profile.
   useEffect(() => {

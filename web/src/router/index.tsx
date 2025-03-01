@@ -16,7 +16,6 @@ const NotFound = lazy(() => import("@/pages/NotFound"));
 const PermissionDenied = lazy(() => import("@/pages/PermissionDenied"));
 const Resources = lazy(() => import("@/pages/Resources"));
 const Setting = lazy(() => import("@/pages/Setting"));
-const ShareTarget = lazy(() => import("@/components/ShareTarget"));
 const SignIn = lazy(() => import("@/pages/SignIn"));
 const SignUp = lazy(() => import("@/pages/SignUp"));
 const UserProfile = lazy(() => import("@/pages/UserProfile"));
@@ -37,14 +36,6 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
-      {
-        path: "share-target",
-        element: (
-          <Suspense fallback={<Loading />}>
-            <ShareTarget />
-          </Suspense>
-        ),
-      },
       {
         path: Routes.AUTH,
         children: [

@@ -117,6 +117,64 @@ const MemoEditor = observer((props: Props) => {
       // Remove data from localStorage
       localStorage.removeItem("share-target-content");
     }
+
+    // Check if there are shared files from Web Share API
+    const hasSharedFiles = localStorage.getItem("share-target-has-files");
+    if (hasSharedFiles === "true" && 'caches' in window) {
+      const sharedFiles = JSON.parse(localStorage.getItem("share-target-files") || "[]");
+
+      if (sharedFiles.length > 0) {
+        const processSharedFiles = async () => {
+          const cache = await caches.open('memos-share-cache-v1');
+          const uploadedResourceList: Resource[] = [];
+
+          for (const fileInfo of sharedFiles) {
+            try {
+              const cachedResponse = await cache.match(fileInfo.cacheKey);
+              if (cachedResponse) {
+                const blob = await cachedResponse.blob();
+                // Use the original filename that was stored when the file was shared
+                const file = new File([blob], fileInfo.originalFilename || 'shared-file', { type: fileInfo.type });
+
+                const resource = await handleUploadResource(file);
+                if (resource) {
+                  uploadedResourceList.push(resource);
+                  if (memoName) {
+                    await resourceStore.updateResource({
+                      resource: Resource.fromPartial({
+                        name: resource.name,
+                        memo: memoName,
+                      }),
+                      updateMask: ["memo"],
+                    });
+                  }
+                }
+              }
+            } catch (error) {
+              console.error("Failed to process shared file:", error);
+            }
+          }
+
+          if (uploadedResourceList.length > 0) {
+            setState((prevState) => ({
+              ...prevState,
+              resourceList: [...prevState.resourceList, ...uploadedResourceList],
+            }));
+          }
+
+          // Clear the cache and localStorage after processing
+          localStorage.removeItem("share-target-has-files");
+          localStorage.removeItem("share-target-files");
+          if (navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({
+              action: 'CLEAR_SHARE_CACHE'
+            });
+          }
+        };
+
+        processSharedFiles().catch(console.error);
+      }
+    }
   }, []);
 
   useEffect(() => {
