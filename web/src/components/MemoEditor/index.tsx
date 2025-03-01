@@ -270,9 +270,17 @@ const MemoEditor = observer((props: Props) => {
           hyperlinkHighlightedText(editorRef.current, pastedText);
         } else if (editorRef.current != null) {
           event.preventDefault();
+          // Insert the original link first for immediate visual feedback
+          const cursorPosition = editorRef.current.getCursorPosition();
+          editorRef.current.insertText(pastedText);
+          
+          // Then fetch metadata and replace the link if successful
           const success = await insertLinkWithMetadata(editorRef.current, pastedText);
-          if (!success) {
-            editorRef.current.insertText(pastedText);
+          if (success) {
+            // Remove the originally inserted link if metadata was successfully fetched
+            const content = editorRef.current.getContent();
+            const newContent = content.substring(0, cursorPosition) + content.substring(cursorPosition + pastedText.length);
+            editorRef.current.setContent(newContent);
           }
         }
       }
