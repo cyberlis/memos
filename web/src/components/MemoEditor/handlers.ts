@@ -1,3 +1,4 @@
+import { markdownServiceClient } from "@/grpcweb";
 import { EditorRefActions } from "./Editor";
 
 export const handleEditorKeydownWithMarkdownShortcuts = (event: React.KeyboardEvent, editorRef: EditorRefActions) => {
@@ -12,6 +13,35 @@ export const handleEditorKeydownWithMarkdownShortcuts = (event: React.KeyboardEv
   } else if (event.key === "k") {
     event.preventDefault();
     hyperlinkHighlightedText(editorRef);
+  }
+};
+
+export const insertLinkWithMetadata = async (editor: EditorRefActions, url: string) => {
+  try {
+    const linkMetadata = await markdownServiceClient.getLinkMetadata({ link: url });
+
+    let markdownText = "";
+
+    if (linkMetadata.title) {
+      markdownText += `[${linkMetadata.title}](${url})\n\n`;
+    } else {
+      markdownText += `[${url}](${url})\n\n`;
+    }
+
+    if (linkMetadata.description) {
+      markdownText += `> ${linkMetadata.description}\n\n`;
+    }
+
+    if (linkMetadata.image) {
+      markdownText += `![](${linkMetadata.image})\n\n`;
+    }
+
+    editor.insertText(markdownText);
+
+    return true;
+  } catch (error) {
+    console.error("Error fetching URL metadata:", error);
+    return false;
   }
 };
 

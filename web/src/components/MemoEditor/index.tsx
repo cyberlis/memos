@@ -30,7 +30,7 @@ import UploadResourceButton from "./ActionButton/UploadResourceButton";
 import Editor, { EditorRefActions } from "./Editor";
 import RelationListView from "./RelationListView";
 import ResourceListView from "./ResourceListView";
-import { handleEditorKeydownWithMarkdownShortcuts, hyperlinkHighlightedText } from "./handlers";
+import { handleEditorKeydownWithMarkdownShortcuts, hyperlinkHighlightedText, insertLinkWithMetadata } from "./handlers";
 import { MemoEditorContext } from "./types";
 
 export interface Props {
@@ -261,13 +261,21 @@ const MemoEditor = observer((props: Props) => {
     if (event.clipboardData && event.clipboardData.files.length > 0) {
       event.preventDefault();
       await uploadMultiFiles(event.clipboardData.files);
-    } else if (
-      editorRef.current != null &&
-      editorRef.current.getSelectedContent().length != 0 &&
-      isValidUrl(event.clipboardData.getData("Text"))
-    ) {
-      event.preventDefault();
-      hyperlinkHighlightedText(editorRef.current, event.clipboardData.getData("Text"));
+    } else {
+      const pastedText = event.clipboardData.getData("Text");
+
+      if (isValidUrl(pastedText)) {
+        if (editorRef.current != null && editorRef.current.getSelectedContent().length != 0) {
+          event.preventDefault();
+          hyperlinkHighlightedText(editorRef.current, pastedText);
+        } else if (editorRef.current != null) {
+          event.preventDefault();
+          const success = await insertLinkWithMetadata(editorRef.current, pastedText);
+          if (!success) {
+            editorRef.current.insertText(pastedText);
+          }
+        }
+      }
     }
   };
 
