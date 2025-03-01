@@ -6,6 +6,7 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import useLoading from "@/hooks/useLoading";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import useLocalStorage from "react-use/lib/useLocalStorage";
@@ -72,6 +73,7 @@ const MemoEditor = observer((props: Props) => {
     isRequesting: false,
     isComposing: false,
   });
+  const linkMetadataLoading = useLoading(false);
   const [displayTime, setDisplayTime] = useState<Date | undefined>();
   const [hasContent, setHasContent] = useState<boolean>(false);
   const editorRef = useRef<EditorRefActions>(null);
@@ -273,9 +275,11 @@ const MemoEditor = observer((props: Props) => {
           // Insert the original link first for immediate visual feedback
           const cursorPosition = editorRef.current.getCursorPosition();
           editorRef.current.insertText(pastedText);
-          
+
           // Then fetch metadata and replace the link if successful
+          linkMetadataLoading.setLoading();
           const success = await insertLinkWithMetadata(editorRef.current, pastedText);
+          linkMetadataLoading.setFinish();
           if (success) {
             // Remove the originally inserted link if metadata was successfully fetched
             const content = editorRef.current.getContent();
@@ -493,6 +497,7 @@ const MemoEditor = observer((props: Props) => {
                 }
               />
             )}
+            {linkMetadataLoading.isLoading && <LoaderIcon className="w-5 h-5 mx-auto animate-spin" />}
           </div>
         </div>
         <Divider className="!mt-2 opacity-40" />
