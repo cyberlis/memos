@@ -6,7 +6,6 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import useLoading from "@/hooks/useLoading";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import useLocalStorage from "react-use/lib/useLocalStorage";
@@ -15,6 +14,7 @@ import { TAB_SPACE_WIDTH } from "@/helpers/consts";
 import { isValidUrl } from "@/helpers/utils";
 import useAsyncEffect from "@/hooks/useAsyncEffect";
 import useCurrentUser from "@/hooks/useCurrentUser";
+import useLoading from "@/hooks/useLoading";
 import { useMemoStore, useResourceStore } from "@/store/v1";
 import { userStore, workspaceStore } from "@/store/v2";
 import { Location, Memo, MemoRelation, MemoRelation_Type, Visibility } from "@/types/proto/api/v1/memo_service";
@@ -99,24 +99,41 @@ const MemoEditor = observer((props: Props) => {
   }, [autoFocus]);
 
   useEffect(() => {
-    // Check if there's shared content from Web Share API
-    const sharedContent = localStorage.getItem("share-target-content");
-    if (sharedContent && editorRef.current) {
-      // Insert content into editor
-      editorRef.current.setContent(sharedContent);
-
-      // If it's a URL, try to get metadata
-      if (isValidUrl(sharedContent) && !sharedContent.includes("[") && !sharedContent.includes("]")) {
-        linkMetadataLoading.setLoading();
-        insertLinkWithMetadata(editorRef.current, sharedContent)
-          .finally(() => {
-            linkMetadataLoading.setFinish();
-          });
+    const insertSharedContent = async () => {
+      // Check if there's shared content from Web Share API
+      const jsonSharedContent = localStorage.getItem("share-target-content");
+      if (jsonSharedContent && editorRef.current) {
+        const sharedContent = JSON.parse(jsonSharedContent);
+        if (sharedContent.title && sharedContent.url) {
+          const title = sharedContent.title.replace(/[[\]()]/g, " ");
+          editorRef.current.setContent(`[${title}](${sharedContent.url})`);
+        } else if (sharedContent.url && isValidUrl(sharedContent.url)) {
+          // Insert the original link first for immediate visual feedback
+          const cursorPosition = editorRef.current.getCursorPosition();
+          editorRef.current.insertText(sharedContent.url);
+          // Then fetch metadata and replace the link if successful
+          linkMetadataLoading.setLoading();
+          const success = await insertLinkWithMetadata(editorRef.current, sharedContent.url);
+          linkMetadataLoading.setFinish();
+          if (success) {
+            // Remove the originally inserted link if metadata was successfully fetched
+            const content = editorRef.current.getContent();
+            const newContent = content.substring(0, cursorPosition) + content.substring(cursorPosition + sharedContent.url.length);
+            editorRef.current.setContent(newContent);
+          }
+        } else if (sharedContent.title) {
+          editorRef.current.setContent(`# ${sharedContent.title}`);
+        }
+        if (sharedContent.text) {
+          const content = editorRef.current.getContent();
+          const newContent = `${content}\n\n> ${sharedContent.text}\n\n`;
+          editorRef.current.setContent(newContent);
+        }
+        // Remove data from localStorage
+        localStorage.removeItem("share-target-content");
       }
-
-      // Remove data from localStorage
-      localStorage.removeItem("share-target-content");
-    }
+    };
+    insertSharedContent();
   }, []);
 
   useEffect(() => {
