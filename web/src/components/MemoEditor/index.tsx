@@ -104,16 +104,27 @@ const MemoEditor = observer((props: Props) => {
       const jsonSharedContent = localStorage.getItem("share-target-content");
       if (jsonSharedContent && editorRef.current) {
         const sharedContent = JSON.parse(jsonSharedContent);
-        if (sharedContent.title && sharedContent.url) {
-          const title = sharedContent.title.replace(/[[\]()]/g, " ");
-          editorRef.current.setContent(`[${title}](${sharedContent.url})`);
-        } else if (sharedContent.url && isValidUrl(sharedContent.url)) {
+        const title = sharedContent.title.replace(/[[\]()]/g, " ");
+        const text = isValidUrl(sharedContent.text) ? "" : sharedContent.text;
+        let url = "";
+        if (isValidUrl(sharedContent.url)) {
+          url = sharedContent.url;
+        } else if (isValidUrl(sharedContent.text)) {
+          url = sharedContent.text;
+        }
+        if (title) {
+          editorRef.current.insertText(`# ${title}\n\n`);
+        }
+        if (text) {
+          editorRef.current.insertText(`> ${text}\n\n`);
+        }
+        if (url) {
           // Insert the original link first for immediate visual feedback
           const cursorPosition = editorRef.current.getCursorPosition();
-          editorRef.current.insertText(sharedContent.url);
+          editorRef.current.insertText(url);
           // Then fetch metadata and replace the link if successful
           linkMetadataLoading.setLoading();
-          const success = await insertLinkWithMetadata(editorRef.current, sharedContent.url);
+          const success = await insertLinkWithMetadata(editorRef.current, url);
           linkMetadataLoading.setFinish();
           if (success) {
             // Remove the originally inserted link if metadata was successfully fetched
@@ -121,13 +132,6 @@ const MemoEditor = observer((props: Props) => {
             const newContent = content.substring(0, cursorPosition) + content.substring(cursorPosition + sharedContent.url.length);
             editorRef.current.setContent(newContent);
           }
-        } else if (sharedContent.title) {
-          editorRef.current.setContent(`# ${sharedContent.title}`);
-        }
-        if (sharedContent.text) {
-          const content = editorRef.current.getContent();
-          const newContent = `${content}\n\n> ${sharedContent.text}\n\n`;
-          editorRef.current.setContent(newContent);
         }
         // Remove data from localStorage
         localStorage.removeItem("share-target-content");
@@ -535,7 +539,7 @@ const MemoEditor = observer((props: Props) => {
                 }
               />
             )}
-            {linkMetadataLoading.isLoading && <LoaderIcon className="w-5 h-5 mx-auto animate-spin" />}
+            {(linkMetadataLoading.isLoading || state.isUploadingResource) && <LoaderIcon className="w-5 h-5 mx-auto animate-spin" />}
           </div>
         </div>
         <Divider className="!mt-2 opacity-40" />

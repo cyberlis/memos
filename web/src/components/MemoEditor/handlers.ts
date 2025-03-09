@@ -23,7 +23,8 @@ export const insertLinkWithMetadata = async (editor: EditorRefActions, url: stri
     let markdownText = "";
 
     if (linkMetadata.title) {
-      markdownText += `[${linkMetadata.title}](${url})\n\n`;
+      const title = linkMetadata.title.replace(/[[\]()]/g, " ");
+      markdownText += `[${title}](${url})\n\n`;
     } else {
       markdownText += `[${url}](${url})\n\n`;
     }

@@ -43,7 +43,7 @@
     "link": "Link",
     "mark": "Mark",
     "memo": "Memo",
-    "memos": "Memos",
+    "memos": "RcNotes",
     "name": "Name",
     "new": "New",
     "nickname": "Nickname",
@@ -212,7 +212,7 @@
     "account-section": {
       "change-password": "Change password",
       "email-note": "Optional",
-      "export-memos": "Export Memos",
+      "export-memos": "Export RcNotes",
       "nickname-note": "Displayed in the banner",
       "openapi-reset": "Reset OpenAPI Key",
       "openapi-sample-post": "Hello #memos from {{url}}",

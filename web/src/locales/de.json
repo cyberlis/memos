@@ -87,7 +87,7 @@
     "tue": "Di",
     "wed": "Mi"
   },
-  "editor": { 
+  "editor": {
     "add-your-comment-here": "Füge deinen Kommentar hinzu...",
     "any-thoughts": "Ein Gedanke...",
     "save": "Speichern"
@@ -95,7 +95,7 @@
   "inbox": {
     "memo-comment": "{{user}} hat einen Kommentar zu {{memo}} hinterlassen.",
     "version-update": "Die neue Version {{version}} ist jetzt verfügbar!"
- 
+
   },
   "memo": {
     "archived-at": "Archiviert am",
@@ -172,7 +172,7 @@
     "delete-selected-resources": "Ausgewählte Ressource löschen",
     "fetching-data": "Lade Daten…",
     "file-drag-drop-prompt": "Ziehe deine Datei per Drag & Drop hierher, um sie hochzuladen",
-    "linked-amount": "Anzahl verlinkter Memos",
+    "linked-amount": "Anzahl verlinkter RcNotes",
     "no-files-selected": "Keine Dateien ausgewählt",
     "no-resources": "Keine Ressourcen.",
     "no-unused-resources": "Keine ungenutzten Ressourcen",
@@ -216,7 +216,7 @@
     "preference": "Einstellungen",
     "preference-section": {
       "default-memo-sort-option": "Angezeigter Memo-Zeitpunkt",
-      "default-memo-visibility": "Standard Sichtbarkeit von Memos",
+      "default-memo-visibility": "Standard Sichtbarkeit von RcNotes",
       "theme": "Design"
     },
     "sso": "SSO",
@@ -328,7 +328,7 @@
       "week-start-day": "Woche beginnt am",
       "saturday": "Samstag",
       "sunday": "Sonntag",
-      "monday": "Montag"            
+      "monday": "Montag"
     },
     "memo-related-settings": {
       "title": "Einstellungen für Notizen",

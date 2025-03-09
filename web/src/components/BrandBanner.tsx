@@ -15,8 +15,8 @@ const BrandBanner = (props: Props) => {
   const navigateTo = useNavigateTo();
   const currentUser = useCurrentUser();
   const workspaceGeneralSetting = workspaceStore.state.generalSetting;
-  const title = workspaceGeneralSetting.customProfile?.title || "Memos";
-  const avatarUrl = workspaceGeneralSetting.customProfile?.logoUrl || "/full-logo.webp";
+  const title = workspaceGeneralSetting.customProfile?.title || "RcNotes";
+  const avatarUrl = workspaceGeneralSetting.customProfile?.logoUrl || "/full-logo.png";
 
   return (
     <div className={cn("relative w-full h-auto shrink-0", props.className)}>

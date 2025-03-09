@@ -29,7 +29,7 @@ const MobileHeader = (props: Props) => {
           className="font-bold text-lg leading-10 mr-1 text-ellipsis shrink-0 cursor-pointer overflow-hidden text-gray-700 dark:text-gray-300"
           onDoubleClick={() => location.reload()}
         >
-          {workspaceGeneralSetting.customProfile?.title || "Memos"}
+          {workspaceGeneralSetting.customProfile?.title || "RcNotes"}
         </span>
       </div>
       <div className="flex flex-row justify-end items-center">{children}</div>

@@ -43,7 +43,7 @@
     "link": "Lien",
     "mark": "Lier",
     "memo": "Memo",
-    "memos": "Memos",
+    "memos": "RcNotes",
     "name": "Nom",
     "new": "Nouveau",
     "nickname": "Surnom",
@@ -359,7 +359,7 @@
       "week-start-day": "Premier jour de la semaine",
       "saturday": "Samedi",
       "sunday": "Dimanche",
-      "monday": "Lundi"            
+      "monday": "Lundi"
     },
     "memo-related-settings": {
       "title": "Paramètres liés à Memo",

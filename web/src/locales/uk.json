@@ -8,7 +8,7 @@
       "sign-up-tip": "Ще не маєте облікового запису?"
     },
     "common": {
-      "about": "Про Memos",
+      "about": "Про RcNotes",
       "add": "Додати",
       "admin": "Адмін",
       "archive": "Архів",
@@ -151,8 +151,8 @@
       "update-succeed": "Оновлення успішне",
       "user-not-found": "Користувача не знайдено",
       "remove-completed-task-list-items-successfully": "Видалення виконаних успішно!",
-      "failed-to-embed-memo": "Не вдалося вбудувати замітку",  
-      "description-is-required": "Опис є обов’язковим",  
+      "failed-to-embed-memo": "Не вдалося вбудувати замітку",
+      "description-is-required": "Опис є обов’язковим",
       "fill-all-required-fields": "Будь ласка, заповніть усі обов’язкові поля"
     },
     "reference": {
@@ -327,17 +327,17 @@
         "created-at": "Створено о",
         "expires-at": "Термін дії до",
         "token": "Токен",
-        "access-token-deletion": "Ви впевнені, що хочете видалити токен доступу {{accessToken}}? ЦЮ ДІЮ НЕМОЖЛИВО СКАСУВАТИ.",  
-        "access-token-copied-to-clipboard": "Токен доступу скопійовано в буфер обміну",  
-        "create-dialog": {  
-        "create-access-token": "Створити токен доступу",  
-        "description": "Опис",  
-        "some-description": "Деякий опис...",  
-        "expiration": "Термін дії",  
-        "created-at": "Створено",  
-        "expires-at": "Закінчується",  
-        "duration-never": "Ніколи",  
-        "duration-8h": "8 годин",  
+        "access-token-deletion": "Ви впевнені, що хочете видалити токен доступу {{accessToken}}? ЦЮ ДІЮ НЕМОЖЛИВО СКАСУВАТИ.",
+        "access-token-copied-to-clipboard": "Токен доступу скопійовано в буфер обміну",
+        "create-dialog": {
+        "create-access-token": "Створити токен доступу",
+        "description": "Опис",
+        "some-description": "Деякий опис...",
+        "expiration": "Термін дії",
+        "created-at": "Створено",
+        "expires-at": "Закінчується",
+        "duration-never": "Ніколи",
+        "duration-8h": "8 годин",
         "duration-1m": "1 місяць"
         }
       },
@@ -345,13 +345,13 @@
         "title": "Вебхуки",
         "url": "URL",
         "no-webhooks-found": "Вебхуків не знайдено.",
-        "create-dialog": {  
-            "create-webhook": "Створити вебхук",  
-            "edit-webhook": "Редагувати вебхук",  
-            "an-easy-to-remember-name": "Легке для запам'ятовування ім'я",  
-            "title": "Заголовок",  
-            "payload-url": "URL корисного навантаження",  
-            "url-example-post-receive": "https://example.com/postreceive"  
+        "create-dialog": {
+            "create-webhook": "Створити вебхук",
+            "edit-webhook": "Редагувати вебхук",
+            "an-easy-to-remember-name": "Легке для запам'ятовування ім'я",
+            "title": "Заголовок",
+            "payload-url": "URL корисного навантаження",
+            "url-example-post-receive": "https://example.com/postreceive"
         }
       },
       "workspace-section": {
@@ -388,10 +388,10 @@
       "content-syntax": "Синтаксис вмісту"
     },
     "about": {
-      "description": "Приватний і легкий сервіс для нотаток. Легко записуйте та діліться своїми чудовими думками.",  
-      "github-repository": "GitHub-репозиторій",  
-      "official-website": "Офіційний вебсайт",  
-      "blogs": "Блоги",  
+      "description": "Приватний і легкий сервіс для нотаток. Легко записуйте та діліться своїми чудовими думками.",
+      "github-repository": "GitHub-репозиторій",
+      "official-website": "Офіційний вебсайт",
+      "blogs": "Блоги",
       "documents": "Документи"
     }
 }

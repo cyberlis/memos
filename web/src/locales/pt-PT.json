@@ -40,7 +40,7 @@
     "learn-more": "Saiba mais",
     "link": "Link",
     "mark": "Marcar",
-    "memos": "Memos",
+    "memos": "RcNotes",
     "name": "Nome",
     "new": "Novo",
     "nickname": "Apelido",
@@ -112,7 +112,7 @@
     "show-less": "Mostrar menos",
     "view-detail": "Ver detalhes",
     "visibility": {
-      "disabled": "Memos públicos estão desativados",
+      "disabled": "RcNotes públicos estão desativados",
       "private": "Privado",
       "protected": "Protegido",
       "public": "Público"
@@ -184,7 +184,7 @@
     "account-section": {
       "change-password": "Alterar palavra-passe",
       "email-note": "Opcional",
-      "export-memos": "Exportar Memos",
+      "export-memos": "Exportar RcNotes",
       "nickname-note": "Exibido no banner",
       "openapi-reset": "Reiniciar Chave OpenAPI",
       "openapi-sample-post": "Olá #memos de {{url}}",
@@ -323,7 +323,7 @@
       "week-start-day": "Dia de início da semana",
       "saturday": "Sábado",
       "sunday": "Domingo",
-      "monday": "Segunda-feira"            
+      "monday": "Segunda-feira"
     },
     "memo-related-settings": {
       "title": "Definições relacionadas com memos",
@@ -339,7 +339,7 @@
     "all-tags": "Todas as Etiquetas",
     "create-tag": "Criar Etiqueta",
     "create-tags-guide": "Pode criar etiquetas digitando `#etiqueta`.",
-    "delete-confirm": "Tem a certeza que quer eliminar esta etiqueta? Memos associados serão arquivados.",
+    "delete-confirm": "Tem a certeza que quer eliminar esta etiqueta? RcNotes associados serão arquivados.",
     "delete-tag": "Eliminar Etiqueta",
     "no-tag-found": "Nenhuma etiqueta encontrada"
   },

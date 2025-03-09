@@ -37,7 +37,7 @@
     "learn-more": "Saiba mais",
     "link": "Link",
     "mark": "Vincular",
-    "memos": "Memos",
+    "memos": "RcNotes",
     "name": "Nome",
     "new": "Novo",
     "nickname": "Apelido",
@@ -115,7 +115,7 @@
     "to-do": "Tarefas",
     "view-detail": "Ver detalhes",
     "visibility": {
-      "disabled": "Memos públicos estão desabilitados",
+      "disabled": "RcNotes públicos estão desabilitados",
       "private": "Privado (eu)",
       "protected": "Protegido (membros)",
       "public": "Público (todos)"
@@ -187,7 +187,7 @@
     "account-section": {
       "change-password": "Alterar senha",
       "email-note": "Opcional",
-      "export-memos": "Exportar Memos",
+      "export-memos": "Exportar RcNotes",
       "nickname-note": "Exibido no banner",
       "openapi-reset": "Redefinir chave OpenAPI",
       "openapi-sample-post": "Olá #memos em {{url}}",

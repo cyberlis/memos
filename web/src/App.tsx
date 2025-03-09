@@ -65,7 +65,7 @@ const App = observer(() => {
 
     document.title = workspaceGeneralSetting.customProfile.title;
     const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
-    link.href = workspaceGeneralSetting.customProfile.logoUrl || "/logo.webp";
+    link.href = workspaceGeneralSetting.customProfile.logoUrl || "/logo.png";
   }, [workspaceGeneralSetting.customProfile]);
 
   useEffect(() => {
