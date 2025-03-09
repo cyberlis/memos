@@ -129,7 +129,7 @@ const MemoEditor = observer((props: Props) => {
           if (success) {
             // Remove the originally inserted link if metadata was successfully fetched
             const content = editorRef.current.getContent();
-            const newContent = content.substring(0, cursorPosition) + content.substring(cursorPosition + sharedContent.url.length);
+            const newContent = content.substring(0, cursorPosition) + content.substring(cursorPosition + url.length);
             editorRef.current.setContent(newContent);
           }
         }
