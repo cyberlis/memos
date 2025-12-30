@@ -12,13 +12,13 @@ const Heading: React.FC<Props> = ({ level, children }: Props) => {
   const className = (() => {
     switch (level) {
       case 1:
-        return "text-5xl leading-normal font-bold";
+        return "text-2xl leading-normal font-bold";
       case 2:
-        return "text-3xl leading-normal font-medium";
-      case 3:
         return "text-xl leading-normal font-medium";
+      case 3:
+        return "text-lg leading-normal font-medium";
       case 4:
-        return "text-lg font-bold";
+        return "text-sm font-bold";
     }
   })();
 
