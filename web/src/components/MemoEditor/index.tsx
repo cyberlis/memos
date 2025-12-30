@@ -1,7 +1,7 @@
 import { Select, Option, Divider } from "@mui/joy";
 import { Button } from "@usememos/mui";
 import { isEqual } from "lodash-es";
-import { LoaderIcon, SendIcon } from "lucide-react";
+import { LoaderIcon, SendIcon, BoldIcon, CheckSquareIcon, Code2Icon } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
@@ -25,7 +25,7 @@ import { convertVisibilityFromString, convertVisibilityToString } from "@/utils/
 import VisibilityIcon from "../VisibilityIcon";
 import AddMemoRelationPopover from "./ActionButton/AddMemoRelationPopover";
 import LocationSelector from "./ActionButton/LocationSelector";
-import MarkdownMenu from "./ActionButton/MarkdownMenu";
+// import MarkdownMenu from "./ActionButton/MarkdownMenu";
 import TagSelector from "./ActionButton/TagSelector";
 import UploadResourceButton from "./ActionButton/UploadResourceButton";
 import Editor, { EditorRefActions } from "./Editor";
@@ -172,6 +172,64 @@ const MemoEditor = observer((props: Props) => {
       }
     }
   }, [memoName]);
+
+  const handleCodeBlockClick = () => {
+    if (!editorRef.current) {
+      return;
+    }
+
+    const cursorPosition = editorRef.current.getCursorPosition();
+    const prevValue = editorRef.current.getContent().slice(0, cursorPosition);
+    if (prevValue === "" || prevValue.endsWith("\n")) {
+      editorRef.current.insertText("", "```\n", "\n```");
+    } else {
+      editorRef.current.insertText("", "\n```\n", "\n```");
+    }
+    setTimeout(() => {
+      editorRef.current?.scrollToCursor();
+      editorRef.current?.focus();
+    });
+  };
+  const handleBoldClick = () => {
+    if (!editorRef.current) {
+      return;
+    }
+
+    editorRef.current.insertText("", "**", "**");
+    setTimeout(() => {
+      editorRef.current?.scrollToCursor();
+      editorRef.current?.focus();
+    });
+  };
+
+  const handleCheckboxClick = () => {
+    if (!editorRef.current) {
+      return;
+    }
+
+    const currentPosition = editorRef.current.getCursorPosition();
+    const currentLineNumber = editorRef.current.getCursorLineNumber();
+    const currentLine = editorRef.current.getLine(currentLineNumber);
+    let newLine = "";
+    let cursorChange = 0;
+    if (/^- \[( |x|X)\] /.test(currentLine)) {
+      newLine = currentLine.replace(/^- \[( |x|X)\] /, "");
+      cursorChange = -6;
+    } else if (/^\d+\. |- /.test(currentLine)) {
+      const match = currentLine.match(/^\d+\. |- /) ?? [""];
+      newLine = currentLine.replace(/^\d+\. |- /, "- [ ] ");
+      cursorChange = -match[0].length + 6;
+    } else {
+      newLine = "- [ ] " + currentLine;
+      cursorChange = 6;
+    }
+    editorRef.current.setLine(currentLineNumber, newLine);
+    editorRef.current.setCursorPosition(currentPosition + cursorChange);
+    setTimeout(() => {
+      editorRef.current?.scrollToCursor();
+      editorRef.current?.focus();
+    });
+  };
 
   const handleCompositionStart = () => {
     setState((prevState) => ({
@@ -525,7 +583,16 @@ const MemoEditor = observer((props: Props) => {
         <div className="relative w-full flex flex-row justify-between items-center pt-2" onFocus={(e) => e.stopPropagation()}>
           <div className="flex flex-row justify-start items-center opacity-80 dark:opacity-60 -space-x-1">
             <TagSelector editorRef={editorRef} />
-            <MarkdownMenu editorRef={editorRef} />
+            {/* <MarkdownMenu editorRef={editorRef} /> */}
+            <Button size="sm" variant="plain" onClick={handleCheckboxClick}>
+              <CheckSquareIcon className="w-5 h-5 mx-auto" />
+            </Button>
+            <Button size="sm" variant="plain" onClick={handleBoldClick}>
+              <BoldIcon className="w-5 h-5 mx-auto" />
+            </Button>
+            <Button size="sm" variant="plain" onClick={handleCodeBlockClick}>
+              <Code2Icon className="w-5 h-5 mx-auto" />
+            </Button>
             <UploadResourceButton />
             <AddMemoRelationPopover editorRef={editorRef} />
             {workspaceMemoRelatedSetting.enableLocation && (
