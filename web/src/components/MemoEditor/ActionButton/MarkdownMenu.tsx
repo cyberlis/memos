@@ -1,6 +1,6 @@
 import { Dropdown, Menu, MenuButton, MenuItem, Link } from "@mui/joy";
 import { Button } from "@usememos/mui";
-import { CheckSquareIcon, Code2Icon, SquareSlashIcon } from "lucide-react";
+import { BoldIcon, CheckSquareIcon, Code2Icon, SquareSlashIcon } from "lucide-react";
 import { useTranslate } from "@/utils/i18n";
 import { EditorRefActions } from "../Editor";
 
@@ -25,6 +25,18 @@ const MarkdownMenu = (props: Props) => {
     } else {
       editorRef.current.insertText("", "\n```\n", "\n```");
     }
+    setTimeout(() => {
+      editorRef.current?.scrollToCursor();
+      editorRef.current?.focus();
+    });
+  };
+  const handleBoldClick = () => {
+    if (!editorRef.current) {
+      return;
+    }
+
+    const cursorPosition = editorRef.current.getCursorPosition();
+    editorRef.current.insertText("", "**", "**");
     setTimeout(() => {
       editorRef.current?.scrollToCursor();
       editorRef.current?.focus();
@@ -76,11 +88,10 @@ const MarkdownMenu = (props: Props) => {
           <CheckSquareIcon className="w-4 h-auto" />
           <span>{t("markdown.checkbox")}</span>
         </MenuItem>
-        <div className="-mt-0.5 pl-2">
-          <Link fontSize={12} href="https://www.usememos.com/docs/getting-started/content-syntax" target="_blank">
-            {t("markdown.content-syntax")}
-          </Link>
-        </div>
+        <MenuItem onClick={handleBoldClick}>
+          <BoldIcon className="w-4 h-auto" />
+          <span>{t("markdown.bold")}</span>
+        </MenuItem>
       </Menu>
     </Dropdown>
   );

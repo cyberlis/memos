@@ -390,8 +390,6 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/apiv1Memo'
-            required:
-              - memo
       tags:
         - MemoService
   /api/v1/reactions/{id}:
